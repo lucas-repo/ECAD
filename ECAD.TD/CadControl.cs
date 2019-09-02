@@ -28,7 +28,6 @@ namespace ECAD.TD
                     _graphics = value;
                 }
             }
-
         }
         private LayoutManager _layoutManager;
         public LayoutManager LayoutManager
@@ -191,17 +190,14 @@ namespace ECAD.TD
         }
         public void Close()
         {
-            if (Database != null)
-            {
-                LayoutManager = null;
-                Database = null;
-                HostApplicationServices.WorkingDatabase = null;
-                HelperDevice = null;
-                //InitializeGraphics();//todo 测试
-                FileName = null;
-                Graphics = null;
-                Invalidate(new Rectangle(0, 0, 1, 1));
-            }
+            LayoutManager = null;
+            Database = null;
+            HostApplicationServices.WorkingDatabase = null;
+            HelperDevice = null;
+            //InitializeGraphics();//todo 测试
+            FileName = null;
+            Graphics = null;
+            Invalidate(new Rectangle(0, 0, 1, 1));
         }
         public void Open(string fileName)
         {

@@ -22,20 +22,21 @@ namespace ECAD.TD
             if (_services == null)
             {
                 _services = new Services();
-                //SystemObjects.DynamicLinker.LoadApp("GripPoints", false, false);
-                //SystemObjects.DynamicLinker.LoadApp("PlotSettingsValidator", false, false);
-                //HostAppServ hostAppServ= new HostAppServ(_services);
-                //HostApplicationServices.Current = hostAppServ;
-                //Environment.SetEnvironmentVariable("DDPLOTSTYLEPATHS", hostAppServ.FindConfigPath(string.Format("PrinterStyleSheetDir")));
+                SystemObjects.DynamicLinker.LoadApp("GripPoints", false, false);
+                SystemObjects.DynamicLinker.LoadApp("PlotSettingsValidator", false, false);
+                HostAppServ hostAppServ = new HostAppServ(_services);
+                HostApplicationServices.Current = hostAppServ;
+                Environment.SetEnvironmentVariable("DDPLOTSTYLEPATHS", hostAppServ.FindConfigPath(string.Format("PrinterStyleSheetDir")));
             }
         }
         /// <summary>
-        /// 释放资源
+        /// 关闭服务并释放资源（调用之前必须释放Teigha的所有资源）
         /// </summary>
         public static void Close()
         {
             if (_services != null)
             {
+                HostApplicationServices.Current.Dispose();
                 _services.Dispose();
                 _services = null;
             }

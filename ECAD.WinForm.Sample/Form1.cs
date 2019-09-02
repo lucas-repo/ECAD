@@ -1,5 +1,6 @@
 ﻿using ECAD.TD;
 using System;
+using System.ComponentModel;
 using System.Windows.Forms;
 
 namespace ECAD.WinForm.Sample
@@ -29,10 +30,11 @@ namespace ECAD.WinForm.Sample
                 _cadControl.Open(dg.FileName);
             }
         }
-        protected override void OnClosed(EventArgs e)
+        protected override void OnClosing(CancelEventArgs e)
         {
+            _cadControl.Close();
             Configuration.Close();
-            base.OnClosed(e);
+            base.OnClosing(e);
         }
     }
 }

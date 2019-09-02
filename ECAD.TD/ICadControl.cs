@@ -18,6 +18,9 @@ namespace ECAD.TD
         Database Database { get; }
         List<ICadFunction> CadFunctions { get; }
         void Open(string fileName);
+        /// <summary>
+        /// 释放资源
+        /// </summary>
         void Close();
         void Invalidate();
         void Invalidate(Rectangle clipRectangle);
