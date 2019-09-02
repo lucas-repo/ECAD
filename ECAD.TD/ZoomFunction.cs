@@ -213,7 +213,7 @@ namespace ECAD.TD
             };
             _zoomTimer.Elapsed += ZoomTimerTick;
             _client = Rectangle.Empty;
-            Sensitivity = .50;
+            Sensitivity = 0.4;
             ForwardZoomsIn = true;
             Name = "ScrollZoom";
         }
