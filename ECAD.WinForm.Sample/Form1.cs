@@ -23,7 +23,7 @@ namespace ECAD.WinForm.Sample
         {
             OpenFileDialog dg = new OpenFileDialog()
             {
-                Filter = "*.dwg|*.dwg"
+                Filter = "DWG files|*.dwg|DXF files|*.dxf"
             };
             if (dg.ShowDialog() == DialogResult.OK)
             {

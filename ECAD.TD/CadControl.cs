@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using Teigha.DatabaseServices;
@@ -210,9 +211,20 @@ namespace ECAD.TD
                 bool bLoaded = true;
 
                 Database database = new Database(false, false);
+                string extension = Path.GetExtension(fileName);
                 try
                 {
-                    database.ReadDwgFile(fileName, FileOpenMode.OpenForReadAndAllShare, false, "");
+                    switch (extension.ToLower())
+                    {
+                        case ".dwg":
+                            database.ReadDwgFile(fileName, FileOpenMode.OpenForReadAndAllShare, false, "");
+                            break;
+                        case ".dxf":
+                            database.DxfIn(fileName, "");
+                            break;
+                        default:
+                            throw new System.Exception("不支持的格式");
+                    }
                 }
                 catch (System.Exception ex)
                 {

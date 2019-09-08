@@ -12,49 +12,49 @@ namespace ECAD.TD
             dd = serv;
         }
 
-        public String FindConfigPath(String configType)
+        public string FindConfigPath(string configType)
         {
-            String subkey = GetRegistryAcadProfilesKey();
+            string subkey = GetRegistryAcadProfilesKey();
             if (subkey.Length > 0)
             {
-                subkey += String.Format("\\General");
-                String searchPath;
+                subkey += string.Format("\\General");
+                string searchPath;
                 if (GetRegistryString(Registry.CurrentUser, subkey, configType, out searchPath))
                     return searchPath;
             }
-            return String.Format("");
+            return string.Format("");
         }
 
-        private String FindConfigFile(String configType, String file)
+        private string FindConfigFile(string configType, string file)
         {
-            String searchPath = FindConfigPath(configType);
+            string searchPath = FindConfigPath(configType);
             if (searchPath.Length > 0)
             {
-                searchPath = String.Format("{0}\\{1}", searchPath, file);
+                searchPath = string.Format("{0}\\{1}", searchPath, file);
                 if (dd.AccessFileRead(searchPath))
                     return searchPath;
             }
-            return String.Format("");
+            return string.Format("");
         }
 
-        public override String FindFile(String file, Database db, FindFileHint hint)
+        public override string FindFile(string file, Database db, FindFileHint hint)
         {
-            String sFile = this.FindFileEx(file, db, hint);
+            string sFile = this.FindFileEx(file, db, hint);
             if (sFile.Length > 0)
                 return sFile;
 
-            String strFileName = file;
-            String ext;
+            string strFileName = file;
+            string ext;
             if (strFileName.Length > 3)
                 ext = strFileName.Substring(strFileName.Length - 4, 4).ToUpper();
             else
                 ext = file.ToUpper();
-            if (ext == String.Format(".PC3"))
-                return FindConfigFile(String.Format("PrinterConfigDir"), file);
-            if (ext == String.Format(".STB") || ext == String.Format(".CTB"))
-                return FindConfigFile(String.Format("PrinterStyleSheetDir"), file);
-            if (ext == String.Format(".PMP"))
-                return FindConfigFile(String.Format("PrinterDescDir"), file);
+            if (ext == string.Format(".PC3"))
+                return FindConfigFile(string.Format("PrinterConfigDir"), file);
+            if (ext == string.Format(".STB") || ext == string.Format(".CTB"))
+                return FindConfigFile(string.Format("PrinterStyleSheetDir"), file);
+            if (ext == string.Format(".PMP"))
+                return FindConfigFile(string.Format("PrinterDescDir"), file);
 
             switch (hint)
             {
@@ -69,13 +69,13 @@ namespace ECAD.TD
                     return sFile;
             }
 
-            if (hint != FindFileHint.TextureMapFile && ext != String.Format(".SHX") && ext != String.Format(".PAT") && ext != String.Format(".TTF") && ext != String.Format(".TTC"))
+            if (hint != FindFileHint.TextureMapFile && ext != string.Format(".SHX") && ext != string.Format(".PAT") && ext != string.Format(".TTF") && ext != string.Format(".TTC"))
             {
-                strFileName += String.Format(".shx");
+                strFileName += string.Format(".shx");
             }
             else if (hint == FindFileHint.TextureMapFile)
             {
-                strFileName.Replace(String.Format("/"), String.Format("\\"));
+                strFileName.Replace(string.Format("/"), string.Format("\\"));
                 int last = strFileName.LastIndexOf("\\");
                 strFileName = strFileName.Substring(0, last);
             }
@@ -85,15 +85,15 @@ namespace ECAD.TD
             while (sFile.Length > 0)
             {
                 int nFindStr = sFile.IndexOf(";");
-                String sPath;
+                string sPath;
                 if (-1 == nFindStr)
                 {
                     sPath = sFile;
-                    sFile = String.Format("");
+                    sFile = string.Format("");
                 }
                 else
                 {
-                    sPath = String.Format("{0}\\{1}", sFile.Substring(0, nFindStr), strFileName);
+                    sPath = string.Format("{0}\\{1}", sFile.Substring(0, nFindStr), strFileName);
                     if (dd.AccessFileRead(sPath))
                     {
                         return sPath;
@@ -109,16 +109,16 @@ namespace ECAD.TD
 
             if (sFile.Length <= 0)
             {
-                String sAcadLocation = GetRegistryAcadLocation();
+                string sAcadLocation = GetRegistryAcadLocation();
                 if (sAcadLocation.Length > 0)
                 {
-                    sFile = String.Format("{0}\\Fonts\\{1}", sAcadLocation, strFileName);
+                    sFile = string.Format("{0}\\Fonts\\{1}", sAcadLocation, strFileName);
                     if (dd.AccessFileRead(sFile))
                     {
-                        sFile = String.Format("{0}\\Support\\{1}", sAcadLocation, strFileName);
+                        sFile = string.Format("{0}\\Support\\{1}", sAcadLocation, strFileName);
                         if (dd.AccessFileRead(sFile))
                         {
-                            sFile = String.Format("");
+                            sFile = string.Format("");
                         }
                     }
                 }
@@ -126,23 +126,23 @@ namespace ECAD.TD
             return sFile;
         }
 
-        public override String FontMapFileName
+        public override string FontMapFileName
         {
             get
             {
-                String subkey = GetRegistryAcadProfilesKey();
+                string subkey = GetRegistryAcadProfilesKey();
                 if (subkey.Length > 0)
                 {
-                    subkey += String.Format("\\Editor Configuration");
-                    String fontMapFile;
-                    if (GetRegistryString(Registry.CurrentUser, subkey, String.Format("FontMappingFile"), out fontMapFile))
+                    subkey += string.Format("\\Editor Configuration");
+                    string fontMapFile;
+                    if (GetRegistryString(Registry.CurrentUser, subkey, string.Format("FontMappingFile"), out fontMapFile))
                         return fontMapFile;
                 }
-                return String.Format("");
+                return string.Format("");
             }
         }
 
-        bool GetRegistryString(RegistryKey rKey, String subkey, String name, out String value)
+        bool GetRegistryString(RegistryKey rKey, string subkey, string name, out string value)
         {
             bool rv = false;
             object objData = null;
@@ -161,75 +161,75 @@ namespace ECAD.TD
             if (rv)
                 value = objData.ToString();
             else
-                value = String.Format("");
+                value = string.Format("");
 
             rKey.Close();
             return rv;
         }
 
-        String GetRegistryAVEMAPSFromProfile()
+        string GetRegistryAVEMAPSFromProfile()
         {
-            String subkey = GetRegistryAcadProfilesKey();
+            string subkey = GetRegistryAcadProfilesKey();
             if (subkey.Length > 0)
             {
-                subkey += String.Format("\\General");
+                subkey += string.Format("\\General");
                 // get the value for the ACAD entry in the registry
-                String tmp;
-                if (GetRegistryString(Registry.CurrentUser, subkey, String.Format("AVEMAPS"), out tmp))
+                string tmp;
+                if (GetRegistryString(Registry.CurrentUser, subkey, string.Format("AVEMAPS"), out tmp))
                     return tmp;
             }
-            return String.Format("");
+            return string.Format("");
         }
 
-        String GetRegistryAcadProfilesKey()
+        string GetRegistryAcadProfilesKey()
         {
-            String subkey = String.Format("SOFTWARE\\Autodesk\\AutoCAD");
-            String tmp;
+            string subkey = string.Format("SOFTWARE\\Autodesk\\AutoCAD");
+            string tmp;
 
-            if (!GetRegistryString(Registry.CurrentUser, subkey, String.Format("CurVer"), out tmp))
-                return String.Format("");
-            subkey += String.Format("\\{0}", tmp);
+            if (!GetRegistryString(Registry.CurrentUser, subkey, string.Format("CurVer"), out tmp))
+                return string.Format("");
+            subkey += string.Format("\\{0}", tmp);
 
-            if (!GetRegistryString(Registry.CurrentUser, subkey, String.Format("CurVer"), out tmp))
-                return String.Format("");
-            subkey += String.Format("\\{0}\\Profiles", tmp);
+            if (!GetRegistryString(Registry.CurrentUser, subkey, string.Format("CurVer"), out tmp))
+                return string.Format("");
+            subkey += string.Format("\\{0}\\Profiles", tmp);
 
-            if (!GetRegistryString(Registry.CurrentUser, subkey, String.Format(""), out tmp))
-                return String.Format("");
-            subkey += String.Format("\\{0}", tmp);
+            if (!GetRegistryString(Registry.CurrentUser, subkey, string.Format(""), out tmp))
+                return string.Format("");
+            subkey += string.Format("\\{0}", tmp);
             return subkey;
         }
 
-        String GetRegistryAcadLocation()
+        string GetRegistryAcadLocation()
         {
-            String subkey = String.Format("SOFTWARE\\Autodesk\\AutoCAD");
-            String tmp;
+            string subkey = string.Format("SOFTWARE\\Autodesk\\AutoCAD");
+            string tmp;
 
-            if (!GetRegistryString(Registry.CurrentUser, subkey, String.Format("CurVer"), out tmp))
-                return String.Format("");
-            subkey += String.Format("\\{0}", tmp);
+            if (!GetRegistryString(Registry.CurrentUser, subkey, string.Format("CurVer"), out tmp))
+                return string.Format("");
+            subkey += string.Format("\\{0}", tmp);
 
-            if (!GetRegistryString(Registry.CurrentUser, subkey, String.Format("CurVer"), out tmp))
-                return String.Format("");
-            subkey += String.Format("\\{0}", tmp);
+            if (!GetRegistryString(Registry.CurrentUser, subkey, string.Format("CurVer"), out tmp))
+                return string.Format("");
+            subkey += string.Format("\\{0}", tmp);
 
-            if (!GetRegistryString(Registry.CurrentUser, subkey, String.Format(""), out tmp))
-                return String.Format("");
+            if (!GetRegistryString(Registry.CurrentUser, subkey, string.Format(""), out tmp))
+                return string.Format("");
             return tmp;
         }
 
-        String GetRegistryACADFromProfile()
+        string GetRegistryACADFromProfile()
         {
-            String subkey = GetRegistryAcadProfilesKey();
+            string subkey = GetRegistryAcadProfilesKey();
             if (subkey.Length > 0)
             {
-                subkey += String.Format("\\General");
+                subkey += string.Format("\\General");
                 // get the value for the ACAD entry in the registry
-                String tmp;
-                if (GetRegistryString(Registry.CurrentUser, subkey, String.Format("ACAD"), out tmp))
+                string tmp;
+                if (GetRegistryString(Registry.CurrentUser, subkey, string.Format("ACAD"), out tmp))
                     return tmp;
             }
-            return String.Format("");
+            return string.Format("");
         }
     };
 }
