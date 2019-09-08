@@ -170,6 +170,7 @@ namespace ECAD.TD
             {
                 // Fix this
                 _zoomTimer.Stop(); // if the timer was already started, stop it.
+                _preventDrag = true;
                 if (_client == null)
                 {
                     _client = (BoundBlock3d)CadControl.ViewExtent.Clone();
@@ -215,6 +216,7 @@ namespace ECAD.TD
             SetCadExtent(_client);
             _client = null;
             BusySet = false;
+            _preventDrag = false;
         }
         private void SetCadExtent(BoundBlock3d boundBlock3D)
         {
