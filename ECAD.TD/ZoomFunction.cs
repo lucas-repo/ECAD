@@ -205,7 +205,7 @@ namespace ECAD.TD
                 Interval = _timerInterval
             };
             _zoomTimer.Elapsed += ZoomTimerTick;
-            Sensitivity = 0.4;
+            Sensitivity = 0.2;
             ForwardZoomsIn = true;
             Name = "ScrollZoom";
         }
