@@ -1,4 +1,8 @@
-﻿using Teigha.DatabaseServices;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using Teigha.DatabaseServices;
 using Teigha.Geometry;
 using Teigha.GraphicsSystem;
 
@@ -82,7 +86,7 @@ namespace ECAD.TD
                     }
                 }
             }
-               
+
             return ext.MinPoint != ext.MaxPoint;
         }
         public static BoundBlock3d GetLayoutExtents(this LayoutHelperDevice helperDevice)
@@ -188,6 +192,127 @@ namespace ECAD.TD
             BoundBlock3d box = new BoundBlock3d();
             box.Set(minPoint, maxPoint);
             Zoom(database, box);
+        }
+        /// <summary>
+        /// 长度
+        /// </summary>
+        /// <param name="boundBlock3D"></param>
+        /// <returns></returns>
+        public static double Width(this BoundBlock3d boundBlock3D)
+        {
+            double value = 0;
+            if (boundBlock3D != null)
+            {
+                value = boundBlock3D.GetMaximumPoint().X - boundBlock3D.GetMinimumPoint().X;
+            }
+            return value;
+        }
+        /// <summary>
+        /// 宽度
+        /// </summary>
+        /// <param name="boundBlock3D"></param>
+        /// <returns></returns>
+        public static double Height(this BoundBlock3d boundBlock3D)
+        {
+            double value = 0;
+            if (boundBlock3D != null)
+            {
+                value = boundBlock3D.GetMaximumPoint().Y - boundBlock3D.GetMinimumPoint().Y;
+            }
+            return value;
+        }
+        /// <summary>
+        /// 高度
+        /// </summary>
+        /// <param name="boundBlock3D"></param>
+        /// <returns></returns>
+        public static double Depth(this BoundBlock3d boundBlock3D)
+        {
+            double value = 0;
+            if (boundBlock3D != null)
+            {
+                value = boundBlock3D.GetMaximumPoint().Z - boundBlock3D.GetMinimumPoint().Z;
+            }
+            return value;
+        }
+        public static Point3d PixelToWorld(this Database database, Point point)
+        {
+            if (database == null)
+            {
+                throw new Exception("参数错误");
+            }
+            Point3d point3d = new Point3d(point.X, point.Y, 0);
+            using (var vtr = (ViewportTableRecord)database.CurrentViewportTableRecordId.GetObject(OpenMode.ForRead))
+            {
+                // using protocol extensions we handle PS and MS viewports in the same manner
+                using (var vpd = new AbstractViewportData(vtr))
+                {
+                    point3d = point3d.TransformBy(vpd.GsView.ObjectToDeviceMatrix.Inverse());
+                }
+            }
+            return point3d;
+        }
+        public static Point3d[] PixelToWorld(this Database database, IEnumerable<Point> points)
+        {
+            if (database == null)
+            {
+                throw new Exception("参数错误");
+            }
+            List<Point3d> point3Ds = new List<Point3d>();
+            if (points != null)
+            {
+                using (var vtr = (ViewportTableRecord)database.CurrentViewportTableRecordId.GetObject(OpenMode.ForRead))
+                {
+                    // using protocol extensions we handle PS and MS viewports in the same manner
+                    using (var vpd = new AbstractViewportData(vtr))
+                    {
+                        Matrix3d matrix3D = vpd.GsView.ObjectToDeviceMatrix.Inverse();
+                        foreach (var point in points)
+                        {
+                            Point3d point3d = new Point3d(point.X, point.Y, 0);
+                            point3d = point3d.TransformBy(matrix3D);
+                            point3Ds.Add(point3d);
+                        }
+                    }
+                }
+            }
+            return point3Ds.ToArray();
+        }
+        public static BoundBlock3d PixelToWorld(this Database database, Rectangle srcRectangle)
+        {
+            Point bl = new Point(srcRectangle.Left, srcRectangle.Bottom);
+            Point tr = new Point(srcRectangle.Right, srcRectangle.Top);
+            var bottomLeft = PixelToWorld(database, bl);
+            var topRight = PixelToWorld(database, tr);
+            BoundBlock3d destBoundBlock3D = new BoundBlock3d();
+            destBoundBlock3D.Set(bottomLeft, topRight);
+            return destBoundBlock3D;
+        }
+        public static Point WorldToPixel(this Database database, Point3d point3D)
+        {
+            Point3d destPoint3d = new Point3d();
+            using (var vtr = (ViewportTableRecord)database.CurrentViewportTableRecordId.GetObject(OpenMode.ForRead))
+            {
+                // using protocol extensions we handle PS and MS viewports in the same manner
+                using (var vpd = new AbstractViewportData(vtr))
+                {
+                    destPoint3d = point3D.TransformBy(vpd.GsView.ObjectToDeviceMatrix);//测试
+                }
+            }
+            Point point = new Point((int)destPoint3d.X, (int)destPoint3d.Y);
+            return point;
+        }
+
+        public static Rectangle WorldToPixel(this Database database, BoundBlock3d srcBoundBlock3d)
+        {
+            Point3d minPoint3d = srcBoundBlock3d.GetMinimumPoint();
+            Point3d maxPoint3d = srcBoundBlock3d.GetMaximumPoint();
+            Point3d tl3d = new Point3d(minPoint3d.X, maxPoint3d.Y, 0);
+            Point3d br3d = new Point3d(maxPoint3d.X, minPoint3d.Y, 0);
+            Point tl = WorldToPixel(database, tl3d);
+            Point br = WorldToPixel(database, br3d);
+            Rectangle destRectangle = new Rectangle(tl.X, tl.Y, br.X - tl.X + 1, br.Y - tl.Y + 1);
+            return destRectangle;
         }
     }
 }
