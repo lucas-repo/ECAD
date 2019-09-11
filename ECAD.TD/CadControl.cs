@@ -166,7 +166,7 @@ namespace ECAD.TD
                     //    }
                     //}
 
-                    HelperDevice.BackgroundColor = Color.FromArgb(33, 40, 48);
+                    HelperDevice.BackgroundColor = BackColor;
                     Aux.preparePlotstyles(Database, ctx);
                 }
             }
