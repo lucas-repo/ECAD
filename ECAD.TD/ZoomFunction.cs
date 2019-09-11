@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Forms;
+using Teigha.DatabaseServices;
+using Teigha.Geometry;
 
 namespace ECAD.TD
 {
@@ -13,22 +15,40 @@ namespace ECAD.TD
     {
         #region Fields
 
-        private Rectangle _client;
+        private BoundBlock3d _client;
+        BoundBlock3d Client
+        {
+            get => _client;
+            set
+            {
+                if (_client != value)
+                {
+                    if (_client != null)
+                    {
+                        _client.Dispose();
+                    }
+                    _client = value;
+                }
+            }
+        }
         private int _direction;
         private Point _dragStart;
         private bool _isDragging;
         private bool _preventDrag;
-        private double _sensitivity;
-        private Rectangle _source;
-        private Rectangle _destView;
+
         private int _timerInterval;
         private System.Timers.Timer _zoomTimer;
 
-        private double _offsetX = 0;
-        private double _offsetY = 0;
-        private double _zoomFactor;
-
         #endregion
+        private Point2d GetResolution(BoundBlock3d boundBlock3D, Rectangle rectangle)
+        {
+            Point3d minPoint = boundBlock3D.GetMinimumPoint();
+            Point3d maxPoint = boundBlock3D.GetMaximumPoint();
+            double xRes = (maxPoint.X - minPoint.X) / rectangle.Width;
+            double yRes = (maxPoint.Y - minPoint.Y) / rectangle.Height;
+            Point2d point2D = new Point2d(xRes, yRes);
+            return point2D;
+        }
         public ZoomFunction(ICadControl cadControl) : base(cadControl)
         {
             Configure();
@@ -60,22 +80,7 @@ namespace ECAD.TD
         /// <summary>
         /// Gets or sets the wheel zoom sensitivity. Increasing makes it more sensitive. Maximum is 0.5, Minimum is 0.01
         /// </summary>
-        public double Sensitivity
-        {
-            get
-            {
-                return 1.0 / _sensitivity;
-            }
-
-            set
-            {
-                if (value > 0.5)
-                    value = 0.5;
-                else if (value < 0.01)
-                    value = 0.01;
-                _sensitivity = 1.0 / value;
-            }
-        }
+        public double Sensitivity { get; set; }
 
         /// <summary>
         /// Gets or sets the full refresh timeout value in milliseconds
@@ -103,10 +108,11 @@ namespace ECAD.TD
         /// <param name="e">The event args.</param>
         public override void DoMouseDown(MouseEventArgs e)
         {
+            _dragStart = new Point(e.X, e.Y);
             if (e.Button == MouseButtons.Middle && !_preventDrag)
             {
-                _dragStart = e.Location;
-                _source = CadControl.View;
+                _isDragging = true;
+                Client = (BoundBlock3d)CadControl.ViewExtent.Clone();
             }
 
             base.DoMouseDown(e);
@@ -119,25 +125,25 @@ namespace ECAD.TD
         /// <param name="e">The event args.</param>
         public override void DoMouseMove(MouseEventArgs e)
         {
-            if (_dragStart != Point.Empty && !_preventDrag)
+            if (_isDragging)
             {
                 if (!BusySet)
                 {
                     BusySet = true;
                 }
-
-                _isDragging = true;
-                Point diff = new Point
-                {
-                    X = _dragStart.X - e.X,
-                    Y = _dragStart.Y - e.Y
-                };
-                _destView = new Rectangle(_source.X + diff.X, _source.Y + diff.Y, _source.Width, _source.Height);
+                Point[] points = new Point[] { _dragStart, e.Location };
+                Point3d[] point3Ds = CadControl.Database.PixelToWorld(points);
+                Point3d startPoint3D = point3Ds[0];
+                Point3d currentPoint3D = point3Ds[1];
+                double xOff = startPoint3D.X - currentPoint3D.X;
+                double yOff = startPoint3D.Y - currentPoint3D.Y;
+                BoundBlock3d boundBlock3D = (BoundBlock3d)_client.Clone();
+                boundBlock3D.TranslateBy(new Vector3d(xOff, yOff, 0));
+                SetCadExtent(boundBlock3D);
             }
 
             base.DoMouseMove(e);
         }
-
         /// <summary>
         /// Mouse Up
         /// </summary>
@@ -146,11 +152,9 @@ namespace ECAD.TD
         {
             if (e.Button == MouseButtons.Middle && _isDragging)
             {
-                _isDragging = false;
-                _preventDrag = true;
-                CadControl.ViewExtent = CadControl.PixelToWorld(_destView);
-                _preventDrag = false;
                 BusySet = false;
+                _client = null;
+                _isDragging = false;
             }
             _dragStart = Point.Empty;
             base.DoMouseUp(e);
@@ -162,43 +166,32 @@ namespace ECAD.TD
         /// <param name="e">The event args.</param>
         public override void DoMouseWheel(MouseEventArgs e)
         {
-            // Fix this
-            _zoomTimer.Stop(); // if the timer was already started, stop it.
-
-            Rectangle r = CadControl.View;
-
-            // For multiple zoom steps before redrawing, we actually
-            // want the x coordinate relative to the screen, not
-            // the x coordinate relative to the previously modified view.
-            if (_client == Rectangle.Empty) _client = r;
-            int cw = _client.Width;
-            int ch = _client.Height;
-
-            double w = r.Width;
-            double h = r.Height;
-
-            if (_direction * e.Delta > 0)
+            if (!_isDragging)
             {
-                double inFactor = 2.0 * _sensitivity;
-                r.Inflate(Convert.ToInt32(-w / inFactor), Convert.ToInt32(-h / inFactor));
+                // Fix this
+                _zoomTimer.Stop(); // if the timer was already started, stop it.
+                _preventDrag = true;
+                if (_client == null)
+                {
+                    _client = (BoundBlock3d)CadControl.ViewExtent.Clone();
+                }
+                Point3d point3D = CadControl.Database.PixelToWorld(e.Location);
+                double ratio;
+                if (_direction * e.Delta > 0)
+                {
+                    ratio = 1 - Sensitivity;
+                }
+                else
+                {
+                    ratio = 1 / (1 - Sensitivity);
+                }
+                _client.ScaleBy(ratio, new Point3d(point3D.X, point3D.Y, 0));
 
-                // try to keep the mouse cursor in the same geographic position
-                r.X += Convert.ToInt32((e.X * w / (_sensitivity * cw)) - (w / inFactor));
-                r.Y += Convert.ToInt32((e.Y * h / (_sensitivity * ch)) - (h / inFactor));
-            }
-            else
-            {
-                double outFactor = 0.5 * _sensitivity;
-                r.Inflate(Convert.ToInt32(w / _sensitivity), Convert.ToInt32(h / _sensitivity));
-                r.X += Convert.ToInt32((w / _sensitivity) - (e.X * w / (outFactor * cw)));
-                r.Y += Convert.ToInt32((h / _sensitivity) - (e.Y * h / (outFactor * ch)));
-            }
-
-            _destView = r;
-            _zoomTimer.Start();
-            if (!BusySet)
-            {
-                BusySet = true;
+                _zoomTimer.Start();
+                if (!BusySet)
+                {
+                    BusySet = true;
+                }
             }
             base.DoMouseWheel(e);
         }
@@ -212,8 +205,7 @@ namespace ECAD.TD
                 Interval = _timerInterval
             };
             _zoomTimer.Elapsed += ZoomTimerTick;
-            _client = Rectangle.Empty;
-            Sensitivity = 0.4;
+            Sensitivity = 0.2;
             ForwardZoomsIn = true;
             Name = "ScrollZoom";
         }
@@ -221,13 +213,16 @@ namespace ECAD.TD
         private void ZoomTimerTick(object sender, EventArgs e)
         {
             _zoomTimer.Stop();
-            if (CadControl == null) return;
-            _client = Rectangle.Empty;
-            CadControl.ViewExtent = CadControl.PixelToWorld(_destView);
-            _destView = CadControl.View;
+            SetCadExtent(_client);
+            _client = null;
             BusySet = false;
+            _preventDrag = false;
         }
-
+        private void SetCadExtent(BoundBlock3d boundBlock3D)
+        {
+            if (CadControl == null || _client == null) return;
+            CadControl.ViewExtent = boundBlock3D;
+        }
         #endregion
     }
 }

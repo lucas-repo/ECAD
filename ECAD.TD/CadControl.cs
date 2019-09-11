@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using Teigha.DatabaseServices;
@@ -210,9 +211,20 @@ namespace ECAD.TD
                 bool bLoaded = true;
 
                 Database database = new Database(false, false);
+                string extension = Path.GetExtension(fileName);
                 try
                 {
-                    database.ReadDwgFile(fileName, FileOpenMode.OpenForReadAndAllShare, false, "");
+                    switch (extension.ToLower())
+                    {
+                        case ".dwg":
+                            database.ReadDwgFile(fileName, FileOpenMode.OpenForReadAndAllShare, false, "");
+                            break;
+                        case ".dxf":
+                            database.DxfIn(fileName, "");
+                            break;
+                        default:
+                            throw new System.Exception("不支持的格式");
+                    }
                 }
                 catch (System.Exception ex)
                 {
@@ -251,7 +263,7 @@ namespace ECAD.TD
             {
                 try
                 {
-                    HelperDevice.Update();
+                    HelperDevice.Update(e.ClipRectangle);
                 }
                 catch (Teigha.Runtime.Exception errror)
                 {
@@ -294,36 +306,14 @@ namespace ECAD.TD
 
         public Point3d PixelToWorld(Point point)
         {
-            if (ViewExtent == null)
-            {
-                return new Point3d(0, 0, 0);
-            }
-            Point3d minPoint3d = ViewExtent.GetMinimumPoint();
-            Point3d maxPoint3d = ViewExtent.GetMaximumPoint();
-            double width = maxPoint3d.X - minPoint3d.X;
-            double height = maxPoint3d.Y - minPoint3d.Y;
-            double x = Convert.ToDouble(point.X);
-            double y = Convert.ToDouble(point.Y);
-            x = (x * width / Width) + minPoint3d.X;
-            y = maxPoint3d.Y - (y * height / Height);
-            return new Point3d(x, y, 0.0);
+            Point3d point3D = Database.PixelToWorld( point);
+            return point3D;
         }
 
         public Point WorldToPixel(Point3d point3D)
         {
-            Point point = new Point();
-            if (ViewExtent == null)
-            {
-                return point;
-            }
-            Point3d minPoint3d = ViewExtent.GetMinimumPoint();
-            Point3d maxPoint3d = ViewExtent.GetMaximumPoint();
-            double width = maxPoint3d.X - minPoint3d.X;
-            double height = maxPoint3d.Y - minPoint3d.Y;
-            if (Width == 0 || Height == 0) return new Point(0, 0);
-            int x = Convert.ToInt32((point3D.X - minPoint3d.X) * (Width / width));
-            int y = Convert.ToInt32((maxPoint3d.Y - point3D.Y) * (Height / height));
-            return new Point(x, y);
+            Point point = Database.WorldToPixel(point3D);
+            return point;
         }
 
         public BoundBlock3d PixelToWorld(Rectangle rectangle)
@@ -340,13 +330,8 @@ namespace ECAD.TD
 
         public Rectangle WorldToPixel(BoundBlock3d boundBlock3D)
         {
-            Point3d minPoint3d = boundBlock3D.GetMinimumPoint();
-            Point3d maxPoint3d = boundBlock3D.GetMaximumPoint();
-            Point3d tl = new Point3d(minPoint3d.X, maxPoint3d.Y, 0);
-            Point3d br = new Point3d(maxPoint3d.X, minPoint3d.Y, 0);
-            Point topLeft = WorldToPixel(tl);
-            Point bottomRight = WorldToPixel(br);
-            return new Rectangle(topLeft.X, topLeft.Y, bottomRight.X - topLeft.X, bottomRight.Y - topLeft.Y);
+            Rectangle rectangle = Database.WorldToPixel(boundBlock3D);
+            return rectangle;
         }
 
         public void ActivateCadFunction(ICadFunction function)
