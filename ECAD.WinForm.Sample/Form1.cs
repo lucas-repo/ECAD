@@ -29,7 +29,7 @@ namespace ECAD.WinForm.Sample
             };
             if (dg.ShowDialog() == DialogResult.OK)
             {
-                _cadControl.Open(dg.FileName);
+                _cadControl.Open(dg.FileName, Teigha.DatabaseServices.FileOpenMode.OpenForReadAndAllShare);
             }
         }
         protected override void OnClosing(CancelEventArgs e)
