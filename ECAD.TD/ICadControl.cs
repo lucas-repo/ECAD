@@ -9,7 +9,7 @@ using Teigha.GraphicsSystem;
 
 namespace ECAD.TD
 {
-    public interface ICadControl
+    public interface ICadControl:IDisposable
     {
         Rectangle View { get; }
         BoundBlock3d ViewExtent { get; set; }
@@ -18,10 +18,6 @@ namespace ECAD.TD
         Database Database { get; }
         List<ICadFunction> CadFunctions { get; }
         void Open(string fileName);
-        /// <summary>
-        /// 释放资源
-        /// </summary>
-        void Close();
         void Invalidate();
         void Invalidate(Rectangle clipRectangle);
         Point3d PixelToWorld(Point point);

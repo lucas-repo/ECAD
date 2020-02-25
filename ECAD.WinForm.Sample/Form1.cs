@@ -31,11 +31,15 @@ namespace ECAD.WinForm.Sample
                 _cadControl.Open(dg.FileName);
             }
         }
-        protected override void OnClosing(CancelEventArgs e)
+        protected override void OnClosed(EventArgs e)
         {
-            _cadControl.Close();
+            if (_cadControl != null)
+            {
+                _cadControl.Dispose();
+                _cadControl = null;
+            }
             Configuration.Close();
-            base.OnClosing(e);
+            base.OnClosed(e);
         }
 
         private void 动态演示ToolStripMenuItem_Click(object sender, EventArgs e)

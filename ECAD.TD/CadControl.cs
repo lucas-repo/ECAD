@@ -190,7 +190,7 @@ namespace ECAD.TD
                 Invalidate(new Rectangle(0, 0, 1, 1));
             }
         }
-        public void Close()
+        private void Close()
         {
             LayoutManager = null;
             Database = null;
