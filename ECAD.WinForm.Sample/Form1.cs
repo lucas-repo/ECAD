@@ -15,8 +15,7 @@ namespace ECAD.WinForm.Sample
             InitializeComponent();
             _cadControl = new CadControl()
             {
-                Dock = DockStyle.Fill,
-                BackColor =Color.Black
+                Dock = DockStyle.Fill
             };
             panel1.Controls.Add(_cadControl);
         }

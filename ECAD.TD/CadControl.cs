@@ -117,6 +117,7 @@ namespace ECAD.TD
         public CadControl()
         {
             InitializeComponent();
+            
             CadFunctions = new List<ICadFunction>();
             ZoomFunction zoomFunction = new ZoomFunction(this);
             CadFunctions.Add(zoomFunction);
@@ -350,6 +351,12 @@ namespace ECAD.TD
                 }
                 function.Activate();
             }
+        }
+
+        public ObjectIdCollection GetSelection(Point location, Teigha.GraphicsSystem.SelectionMode selectionMode)
+        {
+            ObjectIdCollection objectIdCollection= TeighaExtension.GetSelection(Database, HelperDevice, location, selectionMode);
+            return objectIdCollection;
         }
     }
 }

@@ -29,5 +29,6 @@ namespace ECAD.TD
         Point WorldToPixel(Point3d point3D);
         Rectangle WorldToPixel(BoundBlock3d boundBlock3D);
         void ActivateCadFunction(ICadFunction function);
+        ObjectIdCollection GetSelection(Point location, Teigha.GraphicsSystem.SelectionMode selectionMode);
     }
 }

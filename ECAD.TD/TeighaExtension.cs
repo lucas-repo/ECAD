@@ -314,5 +314,24 @@ namespace ECAD.TD
             Rectangle destRectangle = new Rectangle(tl.X, tl.Y, br.X - tl.X + 1, br.Y - tl.Y + 1);
             return destRectangle;
         }
+        public static ObjectIdCollection GetSelection(Database database, LayoutHelperDevice layoutHelperDevice, Point location,SelectionMode selectionMode)
+        {
+            ObjectIdCollection objectIdCollection = new ObjectIdCollection();
+            if (database != null && layoutHelperDevice != null)
+            {
+                int buffer = 5;
+                using (Selector selector = new Selector(objectIdCollection, database.CurrentSpaceId))
+                {
+                    using (Point2dCollection point2DCollection = new Point2dCollection(new Point2d[] { new Point2d(location.X - buffer, location.Y - buffer), new Point2d(location.X + buffer, location.Y + buffer) }))
+                    {
+                        using (View pView = layoutHelperDevice.ActiveView)
+                        {
+                            pView.Select(point2DCollection, selector, selectionMode);
+                        }
+                    }
+                }
+            }
+            return objectIdCollection;
+        }
     }
 }
