@@ -17,7 +17,7 @@ namespace ECAD.TD
         LayoutHelperDevice HelperDevice { get; }
         Database Database { get; }
         List<ICadFunction> CadFunctions { get; }
-        void Open(string fileName);
+        void Open(string fileName, FileOpenMode fileOpenMode);
         void Invalidate();
         void Invalidate(Rectangle clipRectangle);
         Point3d PixelToWorld(Point point);

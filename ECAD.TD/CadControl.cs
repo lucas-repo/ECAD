@@ -201,7 +201,7 @@ namespace ECAD.TD
             Graphics = null;
             Invalidate(new Rectangle(0, 0, 1, 1));
         }
-        public void Open(string fileName)
+        public void Open(string fileName, FileOpenMode fileOpenMode)
         {
             if (FileName != fileName)
             {
@@ -218,7 +218,7 @@ namespace ECAD.TD
                     switch (extension.ToLower())
                     {
                         case ".dwg":
-                            database.ReadDwgFile(fileName, FileOpenMode.OpenForReadAndAllShare, false, "");
+                            database.ReadDwgFile(fileName, fileOpenMode, false, "");
                             break;
                         case ".dxf":
                             database.DxfIn(fileName, "");
