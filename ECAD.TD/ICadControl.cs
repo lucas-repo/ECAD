@@ -18,6 +18,7 @@ namespace ECAD.TD
         Database Database { get; }
         List<ICadFunction> CadFunctions { get; }
         void Open(string fileName, FileOpenMode fileOpenMode);
+        void Close();
         void Invalidate();
         void Invalidate(Rectangle clipRectangle);
         Point3d PixelToWorld(Point point);
