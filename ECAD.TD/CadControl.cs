@@ -201,6 +201,10 @@ namespace ECAD.TD
             Graphics = null;
             Invalidate(new Rectangle(0, 0, 1, 1));
         }
+        public void Open(string fileName)
+        {
+            Open(fileName, FileOpenMode.OpenTryForReadShare);
+        }
         public void Open(string fileName, FileOpenMode fileOpenMode)
         {
             if (FileName != fileName)

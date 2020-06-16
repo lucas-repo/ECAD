@@ -16,7 +16,7 @@ namespace ECAD.TD
         /// </summary>
         /// <param name="database"></param>
         /// <returns></returns>
-        public static ObjectId active_viewport_id(Database database)
+        public static ObjectId Active_viewport_id(Database database)
         {
             if (database.TileMode)
             {

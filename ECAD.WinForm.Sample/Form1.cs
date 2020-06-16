@@ -3,6 +3,8 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
+using Teigha.DatabaseServices;
+using Teigha.GraphicsSystem;
 
 namespace ECAD.WinForm.Sample
 {
@@ -114,6 +116,51 @@ namespace ECAD.WinForm.Sample
                         }
                     }
                 }
+            }
+        }
+
+        private void 刷新ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RefreshCache();
+        }
+        /// <summary>
+        /// 刷新图纸缓存
+        /// </summary>
+        public void RefreshCache()
+        {
+            if (_cadControl.Database == null || _cadControl.HelperDevice == null)
+            {
+                MessageBox.Show("请添加数据");
+                return;
+            }
+            if (_cadControl.Database.TileMode)
+            {
+                try
+                {
+                    using (Teigha.GraphicsSystem.View pView = _cadControl.HelperDevice.ActiveView)
+                    {
+                        //if (pView.FieldWidth * 2 < (_cadControl.Database.Extmax.X - _cadControl.Database.Extmin.X))
+                        {
+                            using (var mode = _cadControl.HelperDevice.CreateModel())
+                            {
+                                mode.Invalidate(InvalidationHint.kInvalidateViewportCache);
+                            }
+                            //_cadControl.HelperDevice.Model.Invalidate(InvalidationHint.kInvalidateViewportCache);
+                            //_cadControl.HelperDevice.Model.Invalidate(InvalidationHint.kInvalidateAll);
+                            _cadControl.HelperDevice.Update();
+                        }
+                    }
+
+                    //Invalidate();
+                }
+                catch (System.Runtime.InteropServices.SEHException e)
+                {
+                    MessageBox.Show(string.Format("刷新失败，请重试！，错误信息：{0}", e.ToString()));
+                }
+            }
+            else
+            {
+                MessageBox.Show("请设置图纸为‘Model’模式！");
             }
         }
     }
