@@ -1,4 +1,4 @@
-﻿using ECAD.TD;
+﻿using EM.CAD;
 using System;
 using System.ComponentModel;
 using System.Drawing;
@@ -6,7 +6,7 @@ using System.Windows.Forms;
 using Teigha.DatabaseServices;
 using Teigha.GraphicsSystem;
 
-namespace ECAD.WinForm.Sample
+namespace EM.CAD.Demo
 {
     public partial class Form1 : Form
     {

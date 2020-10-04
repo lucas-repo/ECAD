@@ -7,7 +7,7 @@ using Teigha.DatabaseServices;
 using Teigha.GraphicsInterface;
 using Teigha.GraphicsSystem;
 
-namespace ECAD.TD
+namespace EM.CAD
 {
     /// <summary>
     /// 选择器

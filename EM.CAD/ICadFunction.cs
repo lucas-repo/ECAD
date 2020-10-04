@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace ECAD.TD
+namespace EM.CAD
 {
     public interface ICadFunction
     {

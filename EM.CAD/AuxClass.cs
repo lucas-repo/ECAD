@@ -7,7 +7,7 @@ using Teigha.DatabaseServices;
 using Teigha.GraphicsInterface;
 using Teigha.Runtime;
 
-namespace ECAD.TD
+namespace EM.CAD
 {
     public class Aux
     {

@@ -1,4 +1,4 @@
-﻿namespace ECAD.WinForm.Sample
+﻿namespace EM.CAD.Demo
 {
     partial class Form1
     {

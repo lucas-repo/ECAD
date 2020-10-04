@@ -6,7 +6,7 @@ using Teigha.DatabaseServices;
 using Teigha.Geometry;
 using Teigha.GraphicsSystem;
 
-namespace ECAD.TD
+namespace EM.CAD
 {
     public static class TeighaExtension
     {

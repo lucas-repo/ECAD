@@ -11,7 +11,7 @@ using Teigha.GraphicsInterface;
 using Teigha.GraphicsSystem;
 using Teigha.Runtime;
 
-namespace ECAD.TD
+namespace EM.CAD
 {
     public partial class CadControl : UserControl, ICadControl
     {

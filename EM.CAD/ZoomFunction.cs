@@ -9,7 +9,7 @@ using System.Windows.Forms;
 using Teigha.DatabaseServices;
 using Teigha.Geometry;
 
-namespace ECAD.TD
+namespace EM.CAD
 {
     public class ZoomFunction : CadFunction
     {

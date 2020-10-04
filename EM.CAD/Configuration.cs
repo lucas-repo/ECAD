@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Teigha.DatabaseServices;
 using Teigha.Runtime;
 
-namespace ECAD.TD
+namespace EM.CAD
 {
     /// <summary>
     /// 配置类

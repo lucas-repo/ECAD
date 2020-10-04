@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{83CB1DF5-2C84-4601-817F-9D4F5F9CAA3A}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>ECAD.WinForm.Sample</RootNamespace>
-    <AssemblyName>ECAD.WinForm.Sample</AssemblyName>
+    <RootNamespace>EM.CAD.Demo</RootNamespace>
+    <AssemblyName>EM.CAD.Demo</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -47,7 +47,7 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="TD_Mgd_4.00_10">
-      <HintPath>..\ECAD.TD\Teigha\TD_Mgd_4.00_10.dll</HintPath>
+      <HintPath>..\EM.CAD\Teigha\TD_Mgd_4.00_10.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
@@ -87,9 +87,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ECAD.TD\ECAD.TD.csproj">
+    <ProjectReference Include="..\EM.CAD\EM.CAD.csproj">
       <Project>{27a527cc-dbcd-4105-8c38-d535ddec2ff1}</Project>
-      <Name>ECAD.TD</Name>
+      <Name>EM.CAD</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>

@@ -2,7 +2,7 @@
 using System;
 using Teigha.DatabaseServices;
 
-namespace ECAD.TD
+namespace EM.CAD
 {
     class HostAppServ : HostApplicationServices
     {

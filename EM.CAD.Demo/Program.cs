@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace ECAD.WinForm.Sample
+namespace EM.CAD.Demo
 {
     static class Program
     {
