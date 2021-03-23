@@ -166,7 +166,7 @@ namespace EM.CAD
         /// <param name="e">The event args.</param>
         public override void DoMouseWheel(MouseEventArgs e)
         {
-            if (!_isDragging)
+            if (!_isDragging && CadControl.Database != null)
             {
                 // Fix this
                 _zoomTimer.Stop(); // if the timer was already started, stop it.
