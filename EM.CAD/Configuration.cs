@@ -13,6 +13,26 @@ namespace EM.CAD
     /// </summary>
     public static class Configuration
     {
+        static int _count;
+        static bool IsBusy
+        {
+            get => _count > 0;
+            set
+            {
+                if (value)
+                {
+                    _count++;
+                }
+                else
+                {
+                    _count--;
+                }
+                if (_count < 0)
+                {
+                    _count = 0;
+                }
+            }
+        }
         static Services _services;
         /// <summary>
         /// 配置Teigha环境
@@ -28,18 +48,20 @@ namespace EM.CAD
                 HostApplicationServices.Current = hostAppServ;
                 Environment.SetEnvironmentVariable("DDPLOTSTYLEPATHS", hostAppServ.FindConfigPath(string.Format("PrinterStyleSheetDir")));
             }
+            IsBusy = true;
         }
         /// <summary>
         /// 关闭服务并释放资源（调用之前必须释放Teigha的所有资源）
         /// </summary>
         public static void Close()
         {
-            if (_services != null)
+            IsBusy = false;
+            if (!IsBusy && _services != null)
             {
                 HostApplicationServices.Current.Dispose();
                 _services.Dispose();
                 _services = null;
             }
         }
-    } 
+    }
 }
