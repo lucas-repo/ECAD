@@ -103,8 +103,11 @@ namespace EM.CAD
                     _viewExtent = value;
                     if (_viewExtent != null)
                     {
-                        Database.Zoom(_viewExtent);
-                        Invalidate(new Rectangle(0, 0, 1, 1));
+                        if (Database != null)
+                        {
+                            Database.Zoom(_viewExtent);
+                            Invalidate(new Rectangle(0, 0, 1, 1));
+                        }
                         //Invalidate();
                     }
                     else

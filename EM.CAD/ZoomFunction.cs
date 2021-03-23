@@ -109,7 +109,7 @@ namespace EM.CAD
         public override void DoMouseDown(MouseEventArgs e)
         {
             _dragStart = new Point(e.X, e.Y);
-            if (e.Button == MouseButtons.Middle && !_preventDrag)
+            if (e.Button == MouseButtons.Middle && !_preventDrag && CadControl.ViewExtent != null)
             {
                 _isDragging = true;
                 Client = (BoundBlock3d)CadControl.ViewExtent.Clone();
@@ -125,7 +125,7 @@ namespace EM.CAD
         /// <param name="e">The event args.</param>
         public override void DoMouseMove(MouseEventArgs e)
         {
-            if (_isDragging)
+            if (_isDragging && CadControl.Database != null)
             {
                 if (!BusySet)
                 {
