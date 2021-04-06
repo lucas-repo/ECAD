@@ -122,7 +122,7 @@ namespace EM.CAD
                             BoundBlock3d boundBlock = new BoundBlock3d();
                             bool bBboxValid = viewPE.GetViewExtents(boundBlock);
                             // paper space overall view
-                            if (dbObj is Viewport && ((Viewport)dbObj).Number == 1)
+                            if (dbObj is Viewport viewport && viewport.Number == 1)
                             {
                                 if (!bBboxValid || !(boundBlock.GetMinimumPoint().X < boundBlock.GetMaximumPoint().X && boundBlock.GetMinimumPoint().Y < boundBlock.GetMaximumPoint().Y))
                                 {
@@ -189,9 +189,11 @@ namespace EM.CAD
 
         public static void Zoom(this Database database, Point3d minPoint, Point3d maxPoint)
         {
-            BoundBlock3d box = new BoundBlock3d();
-            box.Set(minPoint, maxPoint);
-            Zoom(database, box);
+            using (BoundBlock3d box = new BoundBlock3d())
+            {
+                box.Set(minPoint, maxPoint);
+                Zoom(database, box);
+            }
         }
         /// <summary>
         /// 长度
@@ -314,7 +316,7 @@ namespace EM.CAD
             Rectangle destRectangle = new Rectangle(tl.X, tl.Y, br.X - tl.X + 1, br.Y - tl.Y + 1);
             return destRectangle;
         }
-        public static ObjectIdCollection GetSelection(Database database, LayoutHelperDevice layoutHelperDevice, Point location,SelectionMode selectionMode)
+        public static ObjectIdCollection GetSelection(Database database, LayoutHelperDevice layoutHelperDevice, Point location, SelectionMode selectionMode)
         {
             ObjectIdCollection objectIdCollection = new ObjectIdCollection();
             if (database != null && layoutHelperDevice != null)

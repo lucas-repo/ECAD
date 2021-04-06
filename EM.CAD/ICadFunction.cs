@@ -4,6 +4,9 @@ using System.Windows.Forms;
 
 namespace EM.CAD
 {
+    /// <summary>
+    /// cad功能接口
+    /// </summary>
     public interface ICadFunction
     {
         #region Events

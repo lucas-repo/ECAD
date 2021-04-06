@@ -159,7 +159,17 @@ namespace EM.CAD
             _dragStart = Point.Empty;
             base.DoMouseUp(e);
         }
-
+        public override void DoMouseDoubleClick(MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Middle && CadControl?.Database!=null)
+            {
+                BoundBlock3d boundBlock3D = new BoundBlock3d();
+                var database = CadControl.Database;
+                boundBlock3D.Set(database.Extmin, database.Extmax);
+                SetCadExtent(boundBlock3D);
+            }
+            base.DoMouseDoubleClick(e);
+        }
         /// <summary>
         /// Mouse Wheel
         /// </summary>

@@ -303,6 +303,14 @@ namespace EM.CAD
             }
             base.OnMouseMove(e);
         }
+        protected override void OnMouseDoubleClick(MouseEventArgs e)
+        {
+            foreach (var tool in CadFunctions.Where(_ => _.Enabled))
+            {
+                tool.DoMouseDoubleClick(e);
+            }
+            base.OnMouseDoubleClick(e);
+        }
         protected override void OnMouseDown(MouseEventArgs e)
         {
             foreach (var tool in CadFunctions.Where(_ => _.Enabled))

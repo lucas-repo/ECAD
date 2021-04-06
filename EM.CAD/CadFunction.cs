@@ -4,6 +4,9 @@ using System.Windows.Forms;
 
 namespace EM.CAD
 {
+    /// <summary>
+    /// cad功能基类
+    /// </summary>
     public abstract class CadFunction : ICadFunction,IDisposable
     {
         public Image ButtonImage { get; set; }
