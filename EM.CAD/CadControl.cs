@@ -15,11 +15,12 @@ namespace EM.CAD
 {
     public partial class CadControl : UserControl, ICadControl
     {
-         Graphics _graphics;
+        Graphics _graphics;
         private Graphics Graphics
         {
             get => _graphics;
-            set{
+            set
+            {
                 if (_graphics != value)
                 {
                     if (_graphics != null)
@@ -120,7 +121,7 @@ namespace EM.CAD
         public CadControl()
         {
             InitializeComponent();
-            
+
             CadFunctions = new List<ICadFunction>();
             ZoomFunction zoomFunction = new ZoomFunction(this);
             CadFunctions.Add(zoomFunction);
@@ -129,6 +130,45 @@ namespace EM.CAD
         ~CadControl()
         {
             Close();
+        }
+        /// <summary>
+        /// 根据控件大小重置范围比例
+        /// </summary>
+        /// <param name="boundBlock">范围</param>
+        public void ResetAspectRatio(BoundBlock3d boundBlock)
+        {
+            // 处理长宽比
+            if (boundBlock == null || boundBlock.Height() == 0) return;
+            double h = Parent.Height;
+            double w = Parent.Width;
+
+            if (h == 0 || w == 0) return;
+
+            double controlAspect = w / h;
+            double srcWidth = boundBlock.Width();
+            double srcHeight = boundBlock.Height();
+            double envelopeAspect = srcWidth / srcHeight;
+            var minPoint = boundBlock.GetMinimumPoint();
+            var maxPoint = boundBlock.GetMaximumPoint();
+            var centerX = (minPoint.X + maxPoint.X) / 2;
+            var centerY = (minPoint.Y + maxPoint.Y) / 2;
+            double destHalfWidth = boundBlock.Width()/2;
+            double destHalfHeight = boundBlock.Height();
+            if (controlAspect > envelopeAspect)
+            {
+                destHalfWidth = srcHeight * controlAspect / 2;
+            }
+            else
+            {
+                destHalfHeight = srcWidth / controlAspect / 2;
+            }
+            var minX = centerX - destHalfWidth;
+            var maxX = centerX + destHalfWidth;
+            var minY = centerY - destHalfHeight;
+            var maxY = centerY + destHalfHeight;
+            Point3d destMinPoint = new Point3d(minX, minY, minPoint.Z);
+            Point3d destMaxPoint = new Point3d(maxX, maxY, maxPoint.Z);
+            boundBlock.Set(destMinPoint, destMaxPoint);
         }
 
         void InitializeGraphics()
@@ -322,7 +362,7 @@ namespace EM.CAD
 
         public Point3d PixelToWorld(Point point)
         {
-            Point3d point3D = Database.PixelToWorld( point);
+            Point3d point3D = Database.PixelToWorld(point);
             return point3D;
         }
 
@@ -370,7 +410,7 @@ namespace EM.CAD
 
         public ObjectIdCollection GetSelection(Point location, Teigha.GraphicsSystem.SelectionMode selectionMode)
         {
-            ObjectIdCollection objectIdCollection= TeighaExtension.GetSelection(Database, HelperDevice, location, selectionMode);
+            ObjectIdCollection objectIdCollection = TeighaExtension.GetSelection(Database, HelperDevice, location, selectionMode);
             return objectIdCollection;
         }
     }

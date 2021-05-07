@@ -139,7 +139,7 @@ namespace EM.CAD
                 double yOff = startPoint3D.Y - currentPoint3D.Y;
                 BoundBlock3d boundBlock3D = (BoundBlock3d)_client.Clone();
                 boundBlock3D.TranslateBy(new Vector3d(xOff, yOff, 0));
-                SetCadExtent(boundBlock3D);
+                CadControl.ViewExtent = boundBlock3D;
             }
 
             base.DoMouseMove(e);
@@ -161,12 +161,13 @@ namespace EM.CAD
         }
         public override void DoMouseDoubleClick(MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Middle && CadControl?.Database!=null)
+            if (e.Button == MouseButtons.Middle && CadControl?.Database != null)
             {
                 BoundBlock3d boundBlock3D = new BoundBlock3d();
                 var database = CadControl.Database;
                 boundBlock3D.Set(database.Extmin, database.Extmax);
-                SetCadExtent(boundBlock3D);
+                CadControl.ResetAspectRatio(boundBlock3D);
+                CadControl.ViewExtent = boundBlock3D;
             }
             base.DoMouseDoubleClick(e);
         }
@@ -223,15 +224,10 @@ namespace EM.CAD
         private void ZoomTimerTick(object sender, EventArgs e)
         {
             _zoomTimer.Stop();
-            SetCadExtent(_client);
+            CadControl.ViewExtent = _client;
             _client = null;
             BusySet = false;
             _preventDrag = false;
-        }
-        private void SetCadExtent(BoundBlock3d boundBlock3D)
-        {
-            if (CadControl == null || _client == null) return;
-            CadControl.ViewExtent = boundBlock3D;
         }
         #endregion
     }

@@ -9,7 +9,7 @@ using Teigha.GraphicsSystem;
 
 namespace EM.CAD
 {
-    public interface ICadControl:IDisposable
+    public interface ICadControl : IDisposable
     {
         Rectangle View { get; }
         BoundBlock3d ViewExtent { get; set; }
@@ -27,5 +27,10 @@ namespace EM.CAD
         Rectangle WorldToPixel(BoundBlock3d boundBlock3D);
         void ActivateCadFunction(ICadFunction function);
         ObjectIdCollection GetSelection(Point location, Teigha.GraphicsSystem.SelectionMode selectionMode);
+        /// <summary>
+        /// 根据控件大小重置范围比例
+        /// </summary>
+        /// <param name="boundBlock">范围</param>
+        void ResetAspectRatio(BoundBlock3d boundBlock);
     }
 }
