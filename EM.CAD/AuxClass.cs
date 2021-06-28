@@ -38,22 +38,25 @@ namespace EM.CAD
         /// <param name="ctx"></param>
         public static void preparePlotstyles(Database database, ContextForDbDatabase ctx)
         {
-            using (BlockTableRecord paperBTR = (BlockTableRecord)database.CurrentSpaceId.GetObject(OpenMode.ForRead))
+            using (var trans = database.TransactionManager.StartTransaction())
             {
-                //通过块表记录得到布局
-                using (Layout pLayout = (Layout)paperBTR.LayoutId.GetObject(OpenMode.ForRead))
+                using (BlockTableRecord paperBTR = (BlockTableRecord)database.CurrentSpaceId.GetObject(OpenMode.ForRead))
                 {
-                    if (ctx.IsPlotGeneration ? pLayout.PlotPlotStyles : pLayout.ShowPlotStyles)
+                    //通过块表记录得到布局
+                    using (Layout pLayout = (Layout)paperBTR.LayoutId.GetObject(OpenMode.ForRead))
                     {
-                        string pssFile = pLayout.CurrentStyleSheet;
-                        if (pssFile.Length > 0)
+                        if (ctx.IsPlotGeneration ? pLayout.PlotPlotStyles : pLayout.ShowPlotStyles)
                         {
-                            string testpath = ((HostAppServ)HostApplicationServices.Current).FindFile(pssFile, database, FindFileHint.Default);
-                            if (testpath.Length > 0)
+                            string pssFile = pLayout.CurrentStyleSheet;
+                            if (pssFile.Length > 0)
                             {
-                                using (FileStreamBuf pFileBuf = new FileStreamBuf(testpath))
+                                string testpath = ((HostAppServ)HostApplicationServices.Current).FindFile(pssFile, database, FindFileHint.Default);
+                                if (testpath.Length > 0)
                                 {
-                                    ctx.LoadPlotStyleTable(pFileBuf);
+                                    using (FileStreamBuf pFileBuf = new FileStreamBuf(testpath))
+                                    {
+                                        ctx.LoadPlotStyleTable(pFileBuf);
+                                    }
                                 }
                             }
                         }

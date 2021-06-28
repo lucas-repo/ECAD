@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>EM.CAD</RootNamespace>
     <AssemblyName>EM.CAD</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
     <TargetFrameworkProfile />
@@ -44,9 +44,9 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="TD_Mgd_4.00_10, Version=4.0.0.0, Culture=neutral, PublicKeyToken=460a0bef3ba73253, processorArchitecture=x86">
+    <Reference Include="TD_Mgd_22.5_16, Version=22.5.0.0, Culture=neutral, PublicKeyToken=460a0bef3ba73253, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>Teigha\TD_Mgd_4.00_10.dll</HintPath>
+      <HintPath>Teigha_22.5_16\TD_Mgd_22.5_16.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
@@ -63,6 +63,7 @@
     <Compile Include="HostAppServ.cs" />
     <Compile Include="ICadFunction.cs" />
     <Compile Include="ICadControl.cs" />
+    <Compile Include="OdActivationInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Selector.cs" />
     <Compile Include="TeighaExtension.cs" />
@@ -75,348 +76,317 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Teigha\AcDgnLS_4.00_10.tx">
+    <None Include="Teigha_22.5_16\ACCAMERA_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\AcIdViewObj_4.00_10.tx">
+    <None Include="Teigha_22.5_16\AcDbPointCloudObj_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\AcModelDocObj_4.00_10.tx">
+    <None Include="Teigha_22.5_16\AcDgnLS_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\AecArchBase40_4.00_10.tx">
+    <None Include="Teigha_22.5_16\AcGeolocationObj_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\AecArchBase50_4.00_10.tx">
+    <None Include="Teigha_22.5_16\AcIdViewObj_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\AecArchBase60_4.00_10.tx">
+    <None Include="Teigha_22.5_16\AcModelDocObj_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\AecArchBase70_4.00_10.tx">
+    <None Include="Teigha_22.5_16\AcMPolygonObj15_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\AecArchBase_4.00_10.tx">
+    <None Include="Teigha_22.5_16\AECIIB_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\AecArchDACHBase40_4.00_10.tx">
+    <None Include="Teigha_22.5_16\AsdkSmileyDb_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\AecArchDACHBase50_4.00_10.tx">
+    <None Include="Teigha_22.5_16\ATEXT_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\AecArchDACHBase60_4.00_10.tx">
+    <None Include="Teigha_22.5_16\AutoSurfServices_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\AecArchDACHBase70_4.00_10.tx">
+    <None Include="Teigha_22.5_16\DbCommands_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\AecArchDACHBase_4.00_10.tx">
+    <None Include="Teigha_22.5_16\DbConstraints_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\AecAreaCalculationBase40_4.00_10.tx">
+    <None Include="Teigha_22.5_16\DbCryptModule_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\AecAreaCalculationBase50_4.00_10.tx">
+    <None Include="Teigha_22.5_16\DbProperties_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\AecAreaCalculationBase60_4.00_10.tx">
+    <None Include="Teigha_22.5_16\DbRuntimeIO_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\AecAreaCalculationBase70_4.00_10.tx">
+    <None Include="Teigha_22.5_16\ExCommands_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\AecAreaCalculationBase_4.00_10.tx">
+    <None Include="Teigha_22.5_16\ExDynamicBlocks_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\AecBase40_4.00_10.tx">
+    <None Include="Teigha_22.5_16\ExEntityIntersection_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\AecBase50_4.00_10.tx">
+    <None Include="Teigha_22.5_16\ExEvalWatchers_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\AecBase60_4.00_10.tx">
+    <None Include="Teigha_22.5_16\GripPoints_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\AecBase70_4.00_10.tx">
+    <None Include="Teigha_22.5_16\ISM_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\AecBase_4.00_10.tx">
+    <None Include="Teigha_22.5_16\ManagedTestCommand_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\AecExtensions_4.00_10.tx">
+    <None Include="Teigha_22.5_16\mgd.manifest">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\AecHouseBuilder_4.00_10.tx">
+    <None Include="Teigha_22.5_16\ModelerGeometry_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\AeciIb_4.00_10.tx">
+    <None Include="Teigha_22.5_16\NETLOADCommand_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\AecSchedule40_4.00_10.tx">
+    <None Include="Teigha_22.5_16\OdaX.SxS.manifest">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\AecSchedule50_4.00_10.tx">
+    <None Include="Teigha_22.5_16\OdDbPartialViewing_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\AecSchedule60_4.00_10.tx">
+    <None Include="Teigha_22.5_16\OdGeoData_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\AecSchedule70_4.00_10.tx">
+    <None Include="Teigha_22.5_16\OdOleItemHandler_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\AecScheduleData40_4.00_10.tx">
+    <None Include="Teigha_22.5_16\OdOleSsItemHandler_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\AecScheduleData50_4.00_10.tx">
+    <None Include="Teigha_22.5_16\PlotSettingsValidator_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\AecScheduleData60_4.00_10.tx">
+    <None Include="Teigha_22.5_16\PlotStyleServices_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\AecScheduleData70_4.00_10.tx">
+    <None Include="Teigha_22.5_16\PointCloudHost_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\AecScheduleData_4.00_10.tx">
+    <None Include="Teigha_22.5_16\RasterProcessor_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\AecSchedule_4.00_10.tx">
+    <None Include="Teigha_22.5_16\RcsFileServices_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\AecStructureBase40_4.00_10.tx">
+    <None Include="Teigha_22.5_16\RecomputeDimBlock_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\AecStructureBase50_4.00_10.tx">
+    <None Include="Teigha_22.5_16\RText_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\AecStructureBase60_4.00_10.tx">
+    <None Include="Teigha_22.5_16\RxProperties_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\AecStructureBase70_4.00_10.tx">
+    <None Include="Teigha_22.5_16\RxRasterServices_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\AecStructureBase_4.00_10.tx">
+    <None Include="Teigha_22.5_16\SCENEOE_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\AecUIArchBase_4.00_10.tx">
+    <None Include="Teigha_22.5_16\TAcisDb_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\AecUIBase_4.00_10.tx">
+    <None Include="Teigha_22.5_16\TDwfDb_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\AecUISchedule_4.00_10.tx">
+    <None Include="Teigha_22.5_16\TD_3DSolidHistory_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\AecUIStructureBase_4.00_10.tx">
+    <None Include="Teigha_22.5_16\TD_Ave_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\ExCommands_4.00_10.tx">
+    <None Include="Teigha_22.5_16\TD_DbDataLinkWin_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\ExFieldEvaluator_4.00_10.tx">
+    <None Include="Teigha_22.5_16\TD_DbEntities_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\GripPoints_4.00_10.tx">
+    <None Include="Teigha_22.5_16\TD_DbIO_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\mgd.manifest">
+    <None Include="Teigha_22.5_16\TD_DbJoinEntityPE_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\ModelerGeometry_4.00_10.tx">
+    <None Include="Teigha_22.5_16\TD_Dwf7Export_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\OdaQtOpenGL_4.00_10.txv">
+    <None Include="Teigha_22.5_16\TD_Dwf7Import_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\OdViewExMgd.vshost.exe.manifest">
+    <None Include="Teigha_22.5_16\TD_DwfUnderlay_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\PlotStyleServices_4.00_10.tx">
+    <None Include="Teigha_22.5_16\TD_DynBlocks_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\RasterProcessor_4.00_10.tx">
+    <None Include="Teigha_22.5_16\TD_FtFontEngine_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\RecomputeDimBlock_4.00_10.tx">
+    <None Include="Teigha_22.5_16\TD_PdfExport_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\RxRasterServices_4.00_10.tx">
+    <None Include="Teigha_22.5_16\TD_Sm_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\TD_DgnDb_4.00_10.tx">
+    <None Include="Teigha_22.5_16\TD_STLExport_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\TD_DgnImport_4.00_10.tx">
+    <None Include="Teigha_22.5_16\TD_SvgExport_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\TD_DynBlocks_4.00_10.tx">
+    <None Include="Teigha_22.5_16\ThreadPool_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\TD_RasterExport_4.00_10.tx">
+    <None Include="Teigha_22.5_16\TrGL2_22.5_16.txr">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\TG_Db_4.00_10.tx">
+    <None Include="Teigha_22.5_16\TRseDb_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\TG_Dgn7IO_4.00_10.tx">
+    <None Include="Teigha_22.5_16\TrXmlVec_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\TG_ModelerGeometry_4.00_10.tx">
+    <None Include="Teigha_22.5_16\TrXml_22.5_16.txr">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Teigha\WinBitmap_4.00_10.txv">
+    <None Include="Teigha_22.5_16\WinBitmap_22.5_16.txv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Teigha_22.5_16\WinComposite_22.5_16.txv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Teigha_22.5_16\WinDirectX_22.5_16.txv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Teigha_22.5_16\WinGDI_22.5_16.txv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Teigha_22.5_16\WinGLES2_22.5_16.txv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Teigha_22.5_16\WinOpenGL_22.5_16.txv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Teigha_22.5_16\WipeOut_22.5_16.tx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Teigha\AecDummyLoader_4.00_10.dll">
+    <Content Include="Teigha_22.5_16\CDevGuideExamplesProject.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Teigha\AecGeometry_4.00_10.dll">
+    </Content>
+    <Content Include="Teigha_22.5_16\Create3dSolids.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Teigha\msvcp100.dll">
+    </Content>
+    <Content Include="Teigha_22.5_16\curl.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Teigha\msvcr100.dll">
+    </Content>
+    <Content Include="Teigha_22.5_16\DwfCore.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Teigha\OdaQtConsole_4.00_10.dll">
+    </Content>
+    <Content Include="Teigha_22.5_16\DwfToolkit.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Teigha\OdaQtPlotSettingsValidator_4.00_10.dll">
+    </Content>
+    <Content Include="Teigha_22.5_16\FileDlgExt_22.5_16.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Teigha\OdaQtPropSystem_4.00_10.dll">
+    </Content>
+    <Content Include="Teigha_22.5_16\OdaX_22.5_16.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Teigha\OdaQtViewSystem_4.00_10.dll">
+    </Content>
+    <Content Include="Teigha_22.5_16\OdBrepModeler_22.5_16.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Teigha\PSToolkit_4.00_10.dll">
+    </Content>
+    <Content Include="Teigha_22.5_16\oless.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Teigha\QtCore4.dll">
+    </Content>
+    <Content Include="Teigha_22.5_16\pcre.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Teigha\QtGui4.dll">
+    </Content>
+    <Content Include="Teigha_22.5_16\TD_AcisBuilder_22.5_16.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Teigha\QtOpenGL4.dll">
+    </Content>
+    <Content Include="Teigha_22.5_16\TD_Alloc_22.5_16.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Teigha\QtXml4.dll">
+    </Content>
+    <Content Include="Teigha_22.5_16\TD_BrepBuilderFiller_22.5_16.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Teigha\sisl.dll">
+    </Content>
+    <Content Include="Teigha_22.5_16\TD_BrepBuilder_22.5_16.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Teigha\TD_AcisBuilder_4.00_10.dll">
+    </Content>
+    <Content Include="Teigha_22.5_16\TD_BrepRenderer_22.5_16.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Teigha\TD_Alloc_4.00_10.dll">
+    </Content>
+    <Content Include="Teigha_22.5_16\TD_Br_22.5_16.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Teigha\TD_Br_4.00_10.dll">
+    </Content>
+    <Content Include="Teigha_22.5_16\TD_DbCore_22.5_16.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Teigha\TD_BrepRenderer_4.00_10.dll">
+    </Content>
+    <Content Include="Teigha_22.5_16\TD_DbRoot_22.5_16.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Teigha\TD_Db_4.00_10.dll">
+    </Content>
+    <Content Include="Teigha_22.5_16\TD_Db_22.5_16.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Teigha\TD_DbRoot_4.00_10.dll">
+    </Content>
+    <Content Include="Teigha_22.5_16\TD_Ge_22.5_16.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Teigha\TD_Ge_4.00_10.dll">
+    </Content>
+    <Content Include="Teigha_22.5_16\TD_Gi_22.5_16.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Teigha\TD_Gi_4.00_10.dll">
+    </Content>
+    <Content Include="Teigha_22.5_16\TD_Gs_22.5_16.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Teigha\TD_Gs_4.00_10.dll">
+    </Content>
+    <Content Include="Teigha_22.5_16\TD_MgdBrep_22.5_16.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Teigha\TD_Mgd_4.00_10.dll">
+    </Content>
+    <Content Include="Teigha_22.5_16\TD_MgdDbConstraints_22.5_16.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Teigha\TD_MgdBrep_4.00_10.dll">
+    </Content>
+    <Content Include="Teigha_22.5_16\TD_Mgd_22.5_16.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Teigha\TD_Root_4.00_10.dll">
+    </Content>
+    <Content Include="Teigha_22.5_16\TD_PDFToolkit_22.5_16.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Teigha\TD_SpatialIndex_4.00_10.dll">
+    </Content>
+    <Content Include="Teigha_22.5_16\TD_Root_22.5_16.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Teigha\W3Dtk.dll">
+    </Content>
+    <Content Include="Teigha_22.5_16\TD_SpatialIndex_22.5_16.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Teigha\WhipTk.dll">
+    </Content>
+    <Content Include="Teigha_22.5_16\TD_Zlib.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Teigha\zlib.dll">
+    </Content>
+    <Content Include="Teigha_22.5_16\VBNETDevGuideExamplesProject.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </Content>
+    <Content Include="Teigha_22.5_16\W3dTk.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Teigha_22.5_16\WhipTk.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Teigha_22.5_16\XNet.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

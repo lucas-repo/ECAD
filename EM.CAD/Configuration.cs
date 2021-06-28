@@ -14,6 +14,7 @@ namespace EM.CAD
     public static class Configuration
     {
         static int _count;
+        private static object _syncLocker = new object();
         static bool IsBusy
         {
             get => _count > 0;
@@ -39,29 +40,53 @@ namespace EM.CAD
         /// </summary>
         public static void Configure()
         {
-            if (_services == null)
+            try
             {
-                _services = new Services();
-                SystemObjects.DynamicLinker.LoadApp("GripPoints", false, false);
-                SystemObjects.DynamicLinker.LoadApp("PlotSettingsValidator", false, false);
-                HostAppServ hostAppServ = new HostAppServ(_services);
-                HostApplicationServices.Current = hostAppServ;
-                Environment.SetEnvironmentVariable("DDPLOTSTYLEPATHS", hostAppServ.FindConfigPath(string.Format("PrinterStyleSheetDir")));
+                if (_services == null)
+                {
+                    lock (_syncLocker)
+                    {
+                        if (_services == null)
+                        {
+                            Services.odActivate(ActivationData.userInfo, ActivationData.userSignature);
+                            _services = new Services();
+                        }
+                    }
+                }
             }
-            IsBusy = true;
+            catch (System.Exception)
+            {
+                throw;
+            }
+
+            //if (_services == null)
+            //{
+            //    _services = new Services();
+            //    SystemObjects.DynamicLinker.LoadApp("GripPoints", false, false);
+            //    SystemObjects.DynamicLinker.LoadApp("PlotSettingsValidator", false, false);
+            //    HostAppServ hostAppServ = new HostAppServ(_services);
+            //    HostApplicationServices.Current = hostAppServ;
+            //    Environment.SetEnvironmentVariable("DDPLOTSTYLEPATHS", hostAppServ.FindConfigPath(string.Format("PrinterStyleSheetDir")));
+            //}
+            //IsBusy = true;
         }
         /// <summary>
         /// 关闭服务并释放资源（调用之前必须释放Teigha的所有资源）
         /// </summary>
         public static void Close()
         {
-            IsBusy = false;
-            if (!IsBusy && _services != null)
+            if (_services != null)
             {
-                HostApplicationServices.Current.Dispose();
                 _services.Dispose();
                 _services = null;
             }
+            //IsBusy = false;
+            //if (!IsBusy && _services != null)
+            //{
+            //    HostApplicationServices.Current.Dispose();
+            //    _services.Dispose();
+            //    _services = null;
+            //}
         }
     }
 }

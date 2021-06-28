@@ -57,32 +57,35 @@ namespace EM.CAD
         public static bool GetLayoutExtents(Database db, Teigha.GraphicsSystem.View pView, ref BoundBlock3d bbox)
         {
             Extents3d ext = new Extents3d();
-            using (BlockTable bt = (BlockTable)db.BlockTableId.GetObject(OpenMode.ForRead))
+            using (var trans = db.TransactionManager.StartTransaction())
             {
-                using (BlockTableRecord pSpace = (BlockTableRecord)bt[BlockTableRecord.PaperSpace].GetObject(OpenMode.ForRead))
+                using (BlockTable bt = (BlockTable)db.BlockTableId.GetObject(OpenMode.ForRead))
                 {
-                    using (Layout pLayout = (Layout)pSpace.LayoutId.GetObject(OpenMode.ForRead))
+                    using (BlockTableRecord pSpace = (BlockTableRecord)bt[BlockTableRecord.PaperSpace].GetObject(OpenMode.ForRead))
                     {
-                        if (pLayout.GetViewports().Count > 0)
+                        using (Layout pLayout = (Layout)pSpace.LayoutId.GetObject(OpenMode.ForRead))
                         {
-                            bool bOverall = true;
-                            foreach (ObjectId id in pLayout.GetViewports())
+                            if (pLayout.GetViewports().Count > 0)
                             {
-                                if (bOverall)
+                                bool bOverall = true;
+                                foreach (ObjectId id in pLayout.GetViewports())
                                 {
-                                    bOverall = false;
-                                    continue;
+                                    if (bOverall)
+                                    {
+                                        bOverall = false;
+                                        continue;
+                                    }
+                                    //Viewport pVp = (Viewport)id.GetObject(OpenMode.ForRead);
                                 }
-                                //Viewport pVp = (Viewport)id.GetObject(OpenMode.ForRead);
+                                ext.TransformBy(pView.ViewingMatrix);
+                                bbox.Set(ext.MinPoint, ext.MaxPoint);
                             }
-                            ext.TransformBy(pView.ViewingMatrix);
+                            else
+                            {
+                                ext = pLayout.Extents;
+                            }
                             bbox.Set(ext.MinPoint, ext.MaxPoint);
                         }
-                        else
-                        {
-                            ext = pLayout.Extents;
-                        }
-                        bbox.Set(ext.MinPoint, ext.MaxPoint);
                     }
                 }
             }
@@ -109,48 +112,51 @@ namespace EM.CAD
 
         public static void ZoomToExtents(this Database database)
         {
-            using (DBObject dbObj = GetActiveViewportId(database).GetObject(OpenMode.ForWrite))
+            using (var trans = database.TransactionManager.StartTransaction())
             {
-                // using protocol extensions we handle PS and MS viewports in the same manner
-                using (AbstractViewportData viewportData = new AbstractViewportData(dbObj))
+                using (DBObject dbObj = GetActiveViewportId(database).GetObject(OpenMode.ForWrite))
                 {
-                    using (Teigha.GraphicsSystem.View view = viewportData.GsView)
+                    // using protocol extensions we handle PS and MS viewports in the same manner
+                    using (AbstractViewportData viewportData = new AbstractViewportData(dbObj))
                     {
-                        // do actual zooming - change GS view
-                        using (AbstractViewPE viewPE = new AbstractViewPE(view))
+                        using (Teigha.GraphicsSystem.View view = viewportData.GsView)
                         {
-                            BoundBlock3d boundBlock = new BoundBlock3d();
-                            bool bBboxValid = viewPE.GetViewExtents(boundBlock);
-                            // paper space overall view
-                            if (dbObj is Viewport viewport && viewport.Number == 1)
+                            // do actual zooming - change GS view
+                            using (AbstractViewPE viewPE = new AbstractViewPE(view))
                             {
-                                if (!bBboxValid || !(boundBlock.GetMinimumPoint().X < boundBlock.GetMaximumPoint().X && boundBlock.GetMinimumPoint().Y < boundBlock.GetMaximumPoint().Y))
+                                BoundBlock3d boundBlock = new BoundBlock3d();
+                                bool bBboxValid = viewPE.GetViewExtents(boundBlock);
+                                // paper space overall view
+                                if (dbObj is Viewport viewport && viewport.Number == 1)
+                                {
+                                    if (!bBboxValid || !(boundBlock.GetMinimumPoint().X < boundBlock.GetMaximumPoint().X && boundBlock.GetMinimumPoint().Y < boundBlock.GetMaximumPoint().Y))
+                                    {
+                                        bBboxValid = GetLayoutExtents(database, view, ref boundBlock);
+                                    }
+                                }
+                                else if (!bBboxValid) // model space viewport
                                 {
                                     bBboxValid = GetLayoutExtents(database, view, ref boundBlock);
                                 }
-                            }
-                            else if (!bBboxValid) // model space viewport
-                            {
-                                bBboxValid = GetLayoutExtents(database, view, ref boundBlock);
-                            }
-                            if (!bBboxValid)
-                            {
-                                // set to somewhat reasonable (e.g. paper size)
-                                if (database.Measurement == MeasurementValue.Metric)
+                                if (!bBboxValid)
                                 {
-                                    boundBlock.Set(Point3d.Origin, new Point3d(297.0, 210.0, 0.0)); // set to papersize ISO A4 (portrait)
+                                    // set to somewhat reasonable (e.g. paper size)
+                                    if (database.Measurement == MeasurementValue.Metric)
+                                    {
+                                        boundBlock.Set(Point3d.Origin, new Point3d(297.0, 210.0, 0.0)); // set to papersize ISO A4 (portrait)
+                                    }
+                                    else
+                                    {
+                                        boundBlock.Set(Point3d.Origin, new Point3d(11.0, 8.5, 0.0)); // ANSI A (8.50 x 11.00) (landscape)
+                                    }
+                                    boundBlock.TransformBy(view.ViewingMatrix);
                                 }
-                                else
-                                {
-                                    boundBlock.Set(Point3d.Origin, new Point3d(11.0, 8.5, 0.0)); // ANSI A (8.50 x 11.00) (landscape)
-                                }
-                                boundBlock.TransformBy(view.ViewingMatrix);
+                                viewPE.ZoomExtents(boundBlock);
+                                boundBlock.Dispose();
                             }
-                            viewPE.ZoomExtents(boundBlock);
-                            boundBlock.Dispose();
+                            // save changes to database
+                            viewportData.SetView(view);
                         }
-                        // save changes to database
-                        viewportData.SetView(view);
                     }
                 }
             }
@@ -158,23 +164,26 @@ namespace EM.CAD
 
         public static void Zoom(this Database database, BoundBlock3d box)
         {
-            using (var vtr = (ViewportTableRecord)database.CurrentViewportTableRecordId.GetObject(OpenMode.ForWrite))
+            using (var trans = database.TransactionManager.StartTransaction())
             {
-                // using protocol extensions we handle PS and MS viewports in the same manner
-                using (var vpd = new AbstractViewportData(vtr))
+                using (var vtr = (ViewportTableRecord)database.CurrentViewportTableRecordId.GetObject(OpenMode.ForWrite))
                 {
-                    var view = vpd.GsView;
-                    // do actual zooming - change GS view
-                    // here protocol extension is used again, that provides some helpful functions
-                    using (var vpe = new AbstractViewPE(view))
+                    // using protocol extensions we handle PS and MS viewports in the same manner
+                    using (var vpd = new AbstractViewportData(vtr))
                     {
-                        using (BoundBlock3d boundBlock3D = (BoundBlock3d)box.Clone())
+                        var view = vpd.GsView;
+                        // do actual zooming - change GS view
+                        // here protocol extension is used again, that provides some helpful functions
+                        using (var vpe = new AbstractViewPE(view))
                         {
-                            boundBlock3D.TransformBy(view.ViewingMatrix);
-                            vpe.ZoomExtents(boundBlock3D);
+                            using (BoundBlock3d boundBlock3D = (BoundBlock3d)box.Clone())
+                            {
+                                boundBlock3D.TransformBy(view.ViewingMatrix);
+                                vpe.ZoomExtents(boundBlock3D);
+                            }
                         }
+                        vpd.SetView(view);
                     }
-                    vpd.SetView(view);
                 }
             }
             //ReSize();
@@ -244,12 +253,15 @@ namespace EM.CAD
                 throw new Exception("参数错误");
             }
             Point3d point3d = new Point3d(point.X, point.Y, 0);
-            using (var vtr = (ViewportTableRecord)database.CurrentViewportTableRecordId.GetObject(OpenMode.ForRead))
+            using (var trans = database.TransactionManager.StartTransaction())
             {
-                // using protocol extensions we handle PS and MS viewports in the same manner
-                using (var vpd = new AbstractViewportData(vtr))
+                using (var vtr = (ViewportTableRecord)database.CurrentViewportTableRecordId.GetObject(OpenMode.ForRead))
                 {
-                    point3d = point3d.TransformBy(vpd.GsView.ObjectToDeviceMatrix.Inverse());
+                    // using protocol extensions we handle PS and MS viewports in the same manner
+                    using (var vpd = new AbstractViewportData(vtr))
+                    {
+                        point3d = point3d.TransformBy(vpd.GsView.ObjectToDeviceMatrix.Inverse());
+                    }
                 }
             }
             return point3d;
@@ -263,20 +275,24 @@ namespace EM.CAD
             List<Point3d> point3Ds = new List<Point3d>();
             if (points != null)
             {
-                using (var vtr = (ViewportTableRecord)database.CurrentViewportTableRecordId.GetObject(OpenMode.ForRead))
+                using (var trans = database.TransactionManager.StartTransaction())
                 {
-                    // using protocol extensions we handle PS and MS viewports in the same manner
-                    using (var vpd = new AbstractViewportData(vtr))
+                    using (var vtr = (ViewportTableRecord)database.CurrentViewportTableRecordId.GetObject(OpenMode.ForRead))
                     {
-                        Matrix3d matrix3D = vpd.GsView.ObjectToDeviceMatrix.Inverse();
-                        foreach (var point in points)
+                        // using protocol extensions we handle PS and MS viewports in the same manner
+                        using (var vpd = new AbstractViewportData(vtr))
                         {
-                            Point3d point3d = new Point3d(point.X, point.Y, 0);
-                            point3d = point3d.TransformBy(matrix3D);
-                            point3Ds.Add(point3d);
+                            Matrix3d matrix3D = vpd.GsView.ObjectToDeviceMatrix.Inverse();
+                            foreach (var point in points)
+                            {
+                                Point3d point3d = new Point3d(point.X, point.Y, 0);
+                                point3d = point3d.TransformBy(matrix3D);
+                                point3Ds.Add(point3d);
+                            }
                         }
                     }
                 }
+
             }
             return point3Ds.ToArray();
         }
@@ -293,12 +309,16 @@ namespace EM.CAD
         public static Point WorldToPixel(this Database database, Point3d point3D)
         {
             Point3d destPoint3d = new Point3d();
-            using (var vtr = (ViewportTableRecord)database.CurrentViewportTableRecordId.GetObject(OpenMode.ForRead))
+
+            using (var trans = database.TransactionManager.StartTransaction())
             {
-                // using protocol extensions we handle PS and MS viewports in the same manner
-                using (var vpd = new AbstractViewportData(vtr))
+                using (var vtr = (ViewportTableRecord)database.CurrentViewportTableRecordId.GetObject(OpenMode.ForRead))
                 {
-                    destPoint3d = point3D.TransformBy(vpd.GsView.ObjectToDeviceMatrix);//测试
+                    // using protocol extensions we handle PS and MS viewports in the same manner
+                    using (var vpd = new AbstractViewportData(vtr))
+                    {
+                        destPoint3d = point3D.TransformBy(vpd.GsView.ObjectToDeviceMatrix);//测试
+                    }
                 }
             }
             Point point = new Point((int)destPoint3d.X, (int)destPoint3d.Y);
