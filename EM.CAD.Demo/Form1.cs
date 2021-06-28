@@ -48,6 +48,11 @@ namespace EM.CAD.Demo
         {
             ChangeColor(_cadControl.Database);
         }
+        /// <summary>
+        /// 设置颜色
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="color"></param>
         private void SetColor(Teigha.DatabaseServices.Entity entity, Color color)
         {
             var tempColor = entity.Color;
